@@ -2,23 +2,33 @@ import streamlit as st
 import sys
 import os
 
-# CONFIGURACIÓN DE RUTAS: Forzamos la detección de la carpeta 'modules'
+# 1. CONFIGURACIÓN DE RUTAS (Debe ir al puro inicio)
 ruta_raiz = os.path.dirname(os.path.abspath(__file__))
 if ruta_raiz not in sys.path:
     sys.path.append(ruta_raiz)
 
-# IMPORTACIÓN DE MÓDULOS (Asegúrate de haber guardado los cambios en cada archivo de la carpeta modules)
+# 2. IMPORTACIÓN DE MÓDULOS
+# Importamos el engine y los modelos DESDE la carpeta modules
 try:
+    from modules.database import engine
+    from modules import models
     import modules.dashboard as dash
     import modules.students as stud
     import modules.reports as rep
     import modules.builder as build
     import modules.scheduling as sched
 except ImportError as e:
-    st.error(f"❌ Error al cargar los módulos: {e}")
+    st.error(f"❌ Error al cargar los módulos o la base de datos: {e}")
     st.stop()
 
-# Configuración visual de la pestaña
+# 3. CREACIÓN AUTOMÁTICA DE TABLAS EN NEON
+# Esto se ejecuta una sola vez al arrancar la app
+try:
+    models.Base.metadata.create_all(bind=engine)
+except Exception as e:
+    st.warning(f"Nota: No se pudo verificar/crear tablas (Posiblemente ya existen): {e}")
+
+# 4. CONFIGURACIÓN VISUAL
 st.set_page_config(
     page_title="SmartExam Manager | UNIMINUTO",
     layout="wide",
@@ -46,37 +56,20 @@ def main():
     st.sidebar.caption("v2.1 - Sistema de Automatización Académica")
 
     # --- CUERPO PRINCIPAL / ENRUTAMIENTO ---
-    
     if choice == "1. Registro de Solicitud":
-        # Llama a la función que tiene el desplegable de materias (Malla)
         stud.registrar_nueva_solicitud()
         
     elif choice == "2. Programación de Evaluaciones":
-        # Llama a la función con fechas, horas y asignación de profesores
         sched.programar_evaluaciones()
         
     elif choice == "3. Registro de Resultados":
-        # Llama a la lógica de Asistencia y Calificación (Aprobado/Reprobado)
         rep.registro_resultados()
         
     elif choice == "4. Dashboards de Gestión":
-        # Llama a las métricas y KPIs
         dash.mostrar_kpis_reales()
         
     elif choice == "5. Estado de Construcción (Malla)":
-        # Llama a la gestión de materias y registro de nuevos profesores
         build.estado_construccion_malla()
-
-    from modules.database import engine
-# Importa aquí tu archivo de modelos (donde está la clase Base)
-import models 
-
-# Esta es la línea mágica que crea las tablas
-try:
-    models.Base.metadata.create_all(bind=engine)
-    print("Tablas creadas exitosamente")
-except Exception as e:
-    print(f"Error creando tablas: {e}")
 
 if __name__ == "__main__":
     main()
