@@ -13,7 +13,8 @@ class Asignatura(Base):
 class Estudiante(Base):
     __tablename__ = 'estudiantes'
     id = Column(Integer, primary_key=True)
-    id_estudiante = Column(String(20), unique=True, nullable=False) # El ID que usas en el JOIN
+    # Cambiamos el nombre para que el SQL lo encuentre
+    id_estudiante = Column(String(20), unique=True, nullable=False) 
     nombre_completo = Column(String(200), nullable=False)
 
 # --- LAS TABLAS QUE FALTAN ---
