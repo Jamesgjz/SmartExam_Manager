@@ -28,14 +28,23 @@ def get_engine():
             st.error("❌ No se encontró el grupo [database] en los Secrets.")
             return None
 
-    # Verificación de seguridad (esto saldrá en tu app si falta algo)
+    # Verificación de seguridad
     if not all([user, password, host, name]):
-        st.warning(f"⚠️ Faltan datos: user={bool(user)}, pass={bool(password)}, host={bool(host)}, db={bool(name)}")
+        st.warning(f"⚠️ Faltan datos de conexión en el entorno.")
         return None
 
     try:
+        # Construcción de la URL con SSL obligatorio para Neon
         url = f"postgresql://{user}:{password}@{host}:{port}/{name}?sslmode=require"
-        return create_engine(url)
+        
+        # AGREGAMOS PARÁMETROS DE ESTABILIDAD (POOLING)
+        return create_engine(
+            url,
+            pool_size=10,        # Mantiene hasta 10 conexiones listas
+            max_overflow=20,     # Permite ráfagas de hasta 20 conexiones adicionales
+            pool_recycle=300,    # Refresca las conexiones cada 5 minutos para evitar timeouts
+            pool_pre_ping=True   # ¡VITAL! Verifica si la conexión está viva antes de cada consulta
+        )
     except Exception as e:
         st.error(f"❌ Error de SQLAlchemy: {e}")
         return None
