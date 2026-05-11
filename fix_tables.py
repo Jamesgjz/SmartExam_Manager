@@ -35,17 +35,18 @@ class MallaCurricular(Base):
     estado = Column(String(50))
 
 def run_fix():
-    print("Reconstruyendo malla_curricular con todas las columnas necesarias...")
+    print("--- RECONSTRUCCIÓN DEFINITIVA DE MALLA CURRICULAR ---")
     try:
         with engine.connect() as conn:
-            # Eliminamos la versión anterior para evitar conflictos de columnas
+            # Borramos la tabla para eliminar el diseño viejo
             conn.execute(text("DROP TABLE IF EXISTS malla_curricular CASCADE"))
             conn.commit()
-            print("Tablas antiguas eliminadas.")
+            print("✅ Tabla antigua eliminada de Neon.")
         
         # Creamos la tabla con: nombre_materia, semestre, observaciones y fecha_actualizacion
         Base.metadata.create_all(bind=engine)
-        print("🚀 ¡Tabla malla_curricular lista para recibir datos!")
+        print("🚀 ¡Tabla recreada con todas las columnas que el SQL exige!")
+        
     except Exception as e:
         print(f"❌ Error: {e}")
 
