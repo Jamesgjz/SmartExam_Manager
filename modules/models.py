@@ -33,8 +33,9 @@ class MallaCurricular(Base):
     __tablename__ = 'malla_curricular'
     id = Column(Integer, primary_key=True)
     codigo_alfa = Column(String(20), unique=True, nullable=False)
-    nombre_materia = Column(String(200)) # Nombre exacto que pide el SQL
+    nombre_materia = Column(String(200)) # Nombre exacto solicitado por el SQL
     estado = Column(String(50))
     semestre = Column(Integer)
     observaciones = Column(String(500))
-    fecha_actualizacion = Column(DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
+    # Importante: El SQL usa CURRENT_TIMESTAMP, así que necesitamos esta columna
+    fecha_actualizacion = Column(DateTime, default=datetime.datetime.utcnow)
