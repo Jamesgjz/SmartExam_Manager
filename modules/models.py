@@ -30,5 +30,8 @@ class Seguimiento(Base):
 class MallaCurricular(Base):
     __tablename__ = 'malla_curricular'
     id = Column(Integer, primary_key=True)
-    codigo_alfa = Column(String(20), unique=True)
-    estado = Column(String(50)) # Ej: 'Construida', 'Pendiente'
+    codigo_alfa = Column(String(20), unique=True, nullable=False)
+    nombre_materia = Column(String(200)) # Cambiado para coincidir con tu INSERT
+    estado = Column(String(50))
+    semestre = Column(Integer)           # Agregada
+    observaciones = Column(String(500))   # Agregada

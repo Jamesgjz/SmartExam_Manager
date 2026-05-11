@@ -35,18 +35,19 @@ class MallaCurricular(Base):
     estado = Column(String(50))
 
 def run_fix():
-    print(f"Conectando a Neon para crear tablas de reporte...")
     try:
-        # Crea físicamente las tablas en la nube
-        Base.metadata.create_all(bind=engine)
-        
-        # Verificación final
         with engine.connect() as conn:
-            conn.execute(text("SELECT 1"))
-        print("\n🚀 ¡TABLAS 'seguimiento' Y 'malla_curricular' CREADAS!")
-        print("Ahora la consulta SQL de reportes ya tiene de dónde leer.")
+            # Borramos para limpiar el nombre de columna viejo
+            conn.execute(text("DROP TABLE IF EXISTS estudiantes CASCADE"))
+            conn.execute(text("DROP TABLE IF EXISTS seguimiento CASCADE"))
+            conn.execute(text("DROP TABLE IF EXISTS malla_curricular CASCADE"))
+            conn.commit()
+        
+        # Creamos todo con los nombres de columna definitivos
+        Base.metadata.create_all(bind=engine)
+        print("🚀 ¡Tablas recreadas con los nombres de columna correctos!")
     except Exception as e:
-        print(f"❌ ERROR: {e}")
+        print(f"❌ Error: {e}")
 
 if __name__ == "__main__":
     run_fix()
