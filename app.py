@@ -11,23 +11,23 @@ if ruta_raiz not in sys.path:
 # Importamos el engine y los modelos DESDE la carpeta modules
 try:
     from modules.database import engine
-    from modules import models
+    from modules.models import Base  # Importamos directamente la clase Base de models.py
     import modules.dashboard as dash
     import modules.students as stud
     import modules.reports as rep
     import modules.builder as build
     import modules.scheduling as sched
 except ImportError as e:
-    st.error(f"❌ Error al cargar los módulos o la base de datos: {e}")
+    st.error(f"❌ Error crítico de importación: {e}")
     st.stop()
 
 # 3. CREACIÓN AUTOMÁTICA DE TABLAS EN NEON
 # Esto se ejecuta una sola vez al arrancar la app
 try:
-    models.Base.metadata.create_all(bind=engine)
+    # Ahora usamos "Base" directamente porque la importamos arriba
+    Base.metadata.create_all(bind=engine)
 except Exception as e:
-    st.warning(f"Nota: No se pudo verificar/crear tablas (Posiblemente ya existen): {e}")
-
+    st.warning(f"Nota sobre las tablas: {e}")
 # 4. CONFIGURACIÓN VISUAL
 st.set_page_config(
     page_title="SmartExam Manager | UNIMINUTO",
