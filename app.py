@@ -67,5 +67,16 @@ def main():
         # Llama a la gestión de materias y registro de nuevos profesores
         build.estado_construccion_malla()
 
+    from modules.database import engine
+# Importa aquí tu archivo de modelos (donde está la clase Base)
+import models 
+
+# Esta es la línea mágica que crea las tablas
+try:
+    models.Base.metadata.create_all(bind=engine)
+    print("Tablas creadas exitosamente")
+except Exception as e:
+    print(f"Error creando tablas: {e}")
+
 if __name__ == "__main__":
     main()
