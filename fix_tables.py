@@ -35,19 +35,19 @@ class MallaCurricular(Base):
     estado = Column(String(50))
 
 def run_fix():
+    print("Borrando y recreando malla_curricular para actualizar columnas...")
     try:
         with engine.connect() as conn:
-            # Borramos para limpiar el nombre de columna viejo
-            conn.execute(text("DROP TABLE IF EXISTS estudiantes CASCADE"))
-            conn.execute(text("DROP TABLE IF EXISTS seguimiento CASCADE"))
+            # Forzamos la eliminación para limpiar la estructura vieja
             conn.execute(text("DROP TABLE IF EXISTS malla_curricular CASCADE"))
             conn.commit()
         
-        # Creamos todo con los nombres de columna definitivos
+        # Creamos la tabla con semestre, observaciones y fecha_actualizacion
         Base.metadata.create_all(bind=engine)
-        print("🚀 ¡Tablas recreadas con los nombres de columna correctos!")
+        print("🚀 ¡Tabla malla_curricular lista con todas sus columnas!")
     except Exception as e:
-        print(f"❌ Error: {e}")
+        print(f"❌ ERROR: {e}")
+
 
 if __name__ == "__main__":
     run_fix()

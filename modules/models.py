@@ -1,5 +1,7 @@
 from sqlalchemy import Column, String, Integer, Float, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import Column, String, Integer, DateTime
+import datetime
 
 Base = declarative_base()
 
@@ -31,7 +33,8 @@ class MallaCurricular(Base):
     __tablename__ = 'malla_curricular'
     id = Column(Integer, primary_key=True)
     codigo_alfa = Column(String(20), unique=True, nullable=False)
-    nombre_materia = Column(String(200)) # Cambiado para coincidir con tu INSERT
+    nombre_materia = Column(String(200)) # Nombre exacto que pide el SQL
     estado = Column(String(50))
-    semestre = Column(Integer)           # Agregada
-    observaciones = Column(String(500))   # Agregada
+    semestre = Column(Integer)
+    observaciones = Column(String(500))
+    fecha_actualizacion = Column(DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
