@@ -1,6 +1,5 @@
-from sqlalchemy import Column, String, Integer, Float, ForeignKey
+from sqlalchemy import Column, String, Integer, Float, DateTime, text  # <-- Importamos 'text' aquí
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, String, Integer, DateTime
 import datetime
 
 Base = declarative_base()
@@ -15,11 +14,9 @@ class Asignatura(Base):
 class Estudiante(Base):
     __tablename__ = 'estudiantes'
     id = Column(Integer, primary_key=True)
-    # Cambiamos el nombre para que el SQL lo encuentre
+    # Nombre exacto para que tus JOINs funcionen
     id_estudiante = Column(String(20), unique=True, nullable=False) 
     nombre_completo = Column(String(200), nullable=False)
-
-# --- LAS TABLAS QUE FALTAN ---
 
 class Seguimiento(Base):
     __tablename__ = 'seguimiento'
@@ -33,9 +30,9 @@ class MallaCurricular(Base):
     __tablename__ = 'malla_curricular'
     id = Column(Integer, primary_key=True)
     codigo_alfa = Column(String(20), unique=True, nullable=False)
-    nombre_materia = Column(String(200)) # Nombre exacto del SQL
+    nombre_materia = Column(String(200)) # Nombre exacto que pide tu INSERT
     estado = Column(String(50))
     semestre = Column(Integer)
     observaciones = Column(String(500))
-    # El SQL usa CURRENT_TIMESTAMP, por lo que esta columna debe existir
+    # Con 'text' importado arriba, esto ya no dará error
     fecha_actualizacion = Column(DateTime, server_default=text('CURRENT_TIMESTAMP'))
